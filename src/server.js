@@ -6,6 +6,7 @@ app.use(cors());
 
 app.use(express.json());
 
-
+const participants = [];
+const messages = [];
 
 app.listen(4000);
