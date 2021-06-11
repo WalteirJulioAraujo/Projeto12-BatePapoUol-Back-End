@@ -8,7 +8,7 @@ app.use(cors());
 
 app.use(express.json());
 
-let participants = [{name: 'walteir', lastStatus: 1623379380731},{name: 'Maria', lastStatus: 1623379380780}];
+let participants = [];
 let messages = [];
 
 
