@@ -12,7 +12,7 @@ let messages = [];
 
 
 app.post('/participants',(req,res)=>{
-    if(req.body.name.length===0){
+    if(!req.body.name){
         res.status(400).send("Something is wrong...");
         return;
     }
@@ -24,7 +24,8 @@ app.post('/participants',(req,res)=>{
     const newParticipant = {...req.body, lastStatus:Date.now()};
     participants.push(newParticipant);
 
-    const newMessage = {from: req.body.name, to: 'Todos', text: 'entra na sala...', type: 'status', time: dayjs().format('HH:mm:ss')}
+    const newMessage = {from: req.body.name, to: 'Todos', text: 'entra na sala...', type: 'status', time: dayjs().format('HH:mm:ss')};
+    messages.push(newMessage);
     res.sendStatus(200);
 })
 
@@ -62,7 +63,7 @@ app.get('/messages',(req,res)=>{
     }
     const filterMessages = messages.filter((e)=> e.type==='message' || e.to===req.header('User') || e.from===req.header('User') )
     if(req.query.limit){
-        res.json(filterMessages.slice(-parseInt(limit)));
+        res.json(filterMessages.slice(-parseInt(req.query.limit)));
         return;
     }
     res.json(filterMessages);
@@ -89,12 +90,12 @@ app.post('/status',(req,res)=>{
 })
 
 setInterval(()=>{
-    const offlineParticipants = participants.filter((e)=>Date.now()-e.lastStatus>10);
+    const offlineParticipants = participants.filter((e)=>Date.now()-e.lastStatus>10000);
     offlineParticipants.forEach((e)=>{
         const offlineMessage = {from: e.name , to: 'Todos', text: 'sai da sala...', type: 'status', time: dayjs().format('HH:mm:ss')}
         messages.push(offlineMessage);
     })
-    const onlineParticipants = participants.filter((e)=>Date.now()-e.lastStatus<=10);
+    const onlineParticipants = participants.filter((e)=>Date.now()-e.lastStatus<=10000);
     participants = [...onlineParticipants];
 },15000)
 
