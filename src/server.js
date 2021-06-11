@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
+import fs from 'fs'
 
 const app = express();
 app.use(cors());
@@ -23,7 +24,6 @@ app.post('/participants',(req,res)=>{
     }
     const newParticipant = {...req.body, lastStatus:Date.now()};
     participants.push(newParticipant);
-
     const newMessage = {from: req.body.name, to: 'Todos', text: 'entra na sala...', type: 'status', time: dayjs().format('HH:mm:ss')};
     messages.push(newMessage);
     res.sendStatus(200);
@@ -35,11 +35,12 @@ app.get('/participants',(req,res)=>{
 })
 
 app.post('/messages',(req,res)=>{
+    console.log(req.body)
     if(!req.header('User')){
         res.sendStatus(400);
         return;
     }
-    if(!(req.body.to || req.body.text)){
+    if(!(req.body.to && req.body.text)){
         res.sendStatus(400);
         return;
     }
@@ -47,7 +48,7 @@ app.post('/messages',(req,res)=>{
         res.sendStatus(400);
         return;
     }
-    if(participants.find((e)=>e.name===req.header('User'))){
+    if(!(participants.find((e)=>e.name===req.header('User')))){
         res.sendStatus(400);
         return;
     }
@@ -61,7 +62,7 @@ app.get('/messages',(req,res)=>{
         res.sendStatus(400);
         return;
     }
-    const filterMessages = messages.filter((e)=> e.type==='message' || e.to===req.header('User') || e.from===req.header('User') )
+    const filterMessages = messages.filter((e)=> e.type==='status' || e.type==='message' || e.to===req.header('User') || e.from===req.header('User') )
     if(req.query.limit){
         res.json(filterMessages.slice(-parseInt(req.query.limit)));
         return;
@@ -71,6 +72,7 @@ app.get('/messages',(req,res)=>{
 
 app.post('/status',(req,res)=>{
     if(!req.header('User')){
+        res.sendStatus(400);
         return;
     }
     const participant = participants.find((e)=>e.name===req.header('User'));
