@@ -30,12 +30,10 @@ app.post('/participants',(req,res)=>{
 })
 
 app.get('/participants',(req,res)=>{
-    //res.send(participants);
     res.json(participants);
 })
 
 app.post('/messages',(req,res)=>{
-    console.log(req.body)
     if(!req.header('User')){
         res.sendStatus(400);
         return;
@@ -81,10 +79,6 @@ app.post('/status',(req,res)=>{
         return;
     }
 
-    // const newParticipants = participants.filter((e)=>e.name!==participant.name);
-    // participants = [...newParticipants];
-    // participant.lastStatus=Date.now();
-    // participants=[...newParticipants,participant];
 
     const index = participants.findIndex((e)=>e.name===req.header('User'));
     participants[index].lastStatus = Date.now();
@@ -106,10 +100,3 @@ app.listen(4000,()=>{
 });
 
 
-// const newParticipants = participants.filter((e)=>e.name!==participant.name);
-//     if(Date.now()-participant.lastStatus>10){
-//         participants = [...newParticipants];
-//     }else{
-//         participant.lastStatus=Date.now();
-//         participants=[...newParticipants,participant];
-//     }
