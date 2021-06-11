@@ -7,8 +7,8 @@ app.use(cors());
 
 app.use(express.json());
 
-const participants = [{name: 'walteir', lastStatus: 1623379380731},{name: 'Maria', lastStatus: 1623379380780}];
-const messages = [];
+let participants = [{name: 'walteir', lastStatus: 1623379380731},{name: 'Maria', lastStatus: 1623379380780}];
+let messages = [];
 
 
 app.post('/participants',(req,res)=>{
@@ -70,7 +70,6 @@ app.get('/messages',(req,res)=>{
 
 app.post('/status',(req,res)=>{
     if(!req.header('User')){
-        res.sendStatus(400);
         return;
     }
     const participant = participants.find((e)=>e.name===req.header('User'));
