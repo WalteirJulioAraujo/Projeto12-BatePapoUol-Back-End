@@ -79,9 +79,13 @@ app.post('/status',(req,res)=>{
         return;
     }
 
+    // const index = participants.findIndex((e)=>e.name===req.header('User'));
 
-    const index = participants.findIndex((e)=>e.name===req.header('User'));
-    participants[index].lastStatus = Date.now();
+    // participants[index].lastStatus = Date.now();
+    // res.sendStatus(200);
+
+    // Solução pos aula do pedrao, como é um objeto ja estou alterando ele la dentro!!!
+    participant.lastStatus=Date.now();
     res.sendStatus(200);
 })
 
